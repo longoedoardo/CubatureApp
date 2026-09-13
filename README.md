@@ -1,5 +1,14 @@
 # CubatureApp
 
+<p align="center">
+  <img src="app/assets/cubature_icon.svg" width="120">
+</p>
+
+<p align="center">
+  <strong>Numerical Cubature for 3D Polyhedral Domains</strong>
+</p>
+
+
 **CubatureApp** è un'applicazione di calcolo scientifico per l'integrazione numerica di funzioni su domini poliedrici tridimensionali.
 
 L'applicazione combina un'interfaccia grafica interattiva sviluppata in **Python/PySide6**, la visualizzazione 3D, il parsing simbolico delle funzioni, la validazione delle mesh, la generazione di report PDF e un **backend numerico Fortran** ad alte prestazioni che implementa il metodo di cubatura **OptimalPolyCuba3D**.
@@ -41,13 +50,7 @@ La geometria è descritta attraverso:
 - facce triangolari;
 - connettività tra vertici e facce.
 
-Il formato di input attualmente utilizzato è una rappresentazione `.dat` leggera, progettata per flussi di lavoro di calcolo scientifico.
-
-### Cubatura ottimale
-
-Il nucleo numerico è basato sul metodo **OptimalPolyCuba3D**.
-
-Il metodo costruisce regole di cubatura utilizzando polinomi di Chebyshev prodotto-tensore e momenti geometrici del dominio poliedrico. I momenti necessari vengono ottenuti dalla rappresentazione del bordo attraverso il teorema della divergenza.
+Il formato di input attualmente utilizzato è una rappresentazione `.dat`.
 
 ### Visualizzazione 3D interattiva
 
@@ -64,7 +67,7 @@ La geometria può quindi essere analizzata direttamente all'interno dell'applica
 
 ### Parser delle funzioni
 
-L'integranda può essere inserita direttamente attraverso l'interfaccia grafica utilizzando la notazione matematica.
+L'integranda può essere inserita direttamente attraverso l'interfaccia grafica utilizzando il linguaggio LaTeX.
 
 Il parser delle funzioni si basa sull'elaborazione simbolica anziché sull'esecuzione arbitraria di espressioni Python, fornendo un meccanismo più sicuro e strutturato per convertire le espressioni matematiche definite dall'utente in funzioni numeriche.
 
@@ -409,51 +412,6 @@ Verificare che i file `.dat` rispettino il formato richiesto e che tutti gli ind
 
 ---
 
-## Stato del progetto
-
-CubatureApp è attualmente in fase di sviluppo attivo.
-
-Lo sviluppo corrente si concentra su:
-
-- affidabilità della cubatura numerica;
-- integrazione con il backend Fortran;
-- visualizzazione tridimensionale interattiva;
-- inserimento strutturato di funzioni matematiche;
-- analisi dei risultati computazionali;
-- realizzazione di esperimenti numerici riproducibili;
-- distribuzione dell'applicazione per macOS.
-
-Gli sviluppi futuri includono:
-
-- supporto per ulteriori formati di mesh;
-- integrazione diretta tra Python e Fortran tramite libreria;
-- implementazione di ulteriori algoritmi di cubatura;
-- stima avanzata dell'errore;
-- ottimizzazione delle prestazioni;
-- calcolo numerico parallelo;
-- visualizzazione avanzata dei pesi di cubatura;
-- calcolo automatico di soluzioni analitiche e di riferimento;
-- distribuzione multipiattaforma.
-
----
-
-## Ambito scientifico
-
-CubatureApp è concepita come uno strumento di calcolo scientifico destinato sia alla **ricerca** sia alla **didattica**.
-
-Il progetto integra diversi ambiti:
-
-- analisi numerica;
-- geometria computazionale;
-- approssimazione polinomiale;
-- teoria della cubatura;
-- programmazione scientifica;
-- calcolo numerico ad alte prestazioni.
-
-La separazione tra l'interfaccia Python e il backend Fortran compilato è intenzionale: l'applicazione fornisce un ambiente computazionale accessibile, mantenendo al contempo un nucleo numerico adatto a esperimenti scientifici computazionalmente impegnativi.
-
----
-
 ## Licenza
 
 CubatureApp è distribuita secondo la licenza specificata nel file:
@@ -464,43 +422,11 @@ LICENSE
 
 Per le condizioni complete di utilizzo, consultare tale file.
 
----
-
-## Autore
-
-**Edoardo Longo**
-
-CubatureApp è sviluppata nell'ambito di un progetto più ampio dedicato alla cubatura numerica su domini poliedrici tridimensionali.
-
-Gli algoritmi numerici alla base dell'applicazione sono implementati nel backend Fortran **OptimalPolyCuba3D**.
-
----
+--
 
 ## Citazione
 
 Se CubatureApp o il metodo numerico alla base del progetto vengono utilizzati in un lavoro accademico, si prega di citare il progetto e la relativa documentazione scientifica.
-
-Una voce bibliografica formale verrà fornita quando il progetto sarà associato a una pubblicazione o a un DOI.
-
----
-
-## Avvio rapido
-
-Per utenti esperti, la configurazione completa è:
-
-```bash
-git clone <repository-url>
-cd CubatureApp
-
-python3 -m venv .venv
-source .venv/bin/activate
-
-pip install -r requirements.txt
-pip install -r requirements-build.txt
-
-python build.py
-python -m app
-```
 
 ---
 
