@@ -55,7 +55,7 @@ CubatureApp offre le seguenti funzionalità:
 - visualizzazione interattiva del dominio poliedrico in 3D;
 - definizione della funzione integranda \(f(x,y,z)\);
 - parsing delle espressioni matematiche tramite SymPy;
-- selezione del **Grado Algebrico di Esattezza (ADE)**;
+- selezione del Grado Algebrico di Esattezza (ADE);
 - generazione automatica dei nodi e dei pesi di cubatura;
 - valutazione della funzione integranda nei nodi di cubatura;
 - calcolo dell'integrale numerico;
