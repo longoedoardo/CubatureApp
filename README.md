@@ -427,7 +427,3 @@ Per le condizioni complete di utilizzo, consultare tale file.
 ## Citazione
 
 Se CubatureApp o il metodo numerico alla base del progetto vengono utilizzati in un lavoro accademico, si prega di citare il progetto e la relativa documentazione scientifica.
-
----
-
-**CubatureApp — Cubatura numerica per domini poliedrici tridimensionali**
