@@ -1,7 +1,7 @@
 # CubatureApp
 
 <p align="center">
-  <img src="app/assets/cubature_icon.svg" width="120">
+  <img src="app/assets/cubature_icon.png" width="120">
 </p>
 
 <p align="center">
