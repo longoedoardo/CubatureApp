@@ -422,7 +422,7 @@ LICENSE
 
 Per le condizioni complete di utilizzo, consultare tale file.
 
---
+---
 
 ## Citazione
 
