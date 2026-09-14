@@ -14,7 +14,6 @@ piccolo preprocessing per accettare comandi LaTeX molto comuni (\\sin, \\cos,
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
 from typing import Callable
 

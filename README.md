@@ -66,7 +66,7 @@ CubatureApp offre le seguenti funzionalità:
 - generazione di report PDF contenenti risultati, grafici e diagnostica;
 - compilazione automatica del backend Fortran quando necessario;
 - creazione di un'applicazione desktop standalone tramite PyInstaller;
-- creazione di un installer DMG per macOS.
+- pacchetti autonomi con icona personalizzata: `.app` su macOS e `.exe` su Windows, avviabili con un doppio clic.
 
 ---
 
@@ -177,10 +177,9 @@ CubatureApp/
 │       ├── triangleQuadratureGJ.f90
 │       └── TypesDef.f90
 │
-├── installer/
-│   └── create_macos_dmg.sh
-│
 ├── build.py
+├── CubatureApp.app/            # launcher a doppio clic per macOS
+├── Avvia CubatureApp.bat       # launcher a doppio clic per Windows
 ├── requirements.txt
 ├── requirements-build.txt
 ├── LICENSE
@@ -359,13 +358,26 @@ which gfortran
 
 ## Avvio dell'applicazione
 
+### Avvio rapido con doppio clic (consigliato per un utilizzo non da terminale)
+
+Nella cartella principale del progetto sono presenti due launcher pronti all'uso:
+
+- **macOS**: `CubatureApp.app` — doppio clic dal Finder.
+- **Windows**: `Avvia CubatureApp.bat` — doppio clic da Esplora file.
+
+Alla prima esecuzione questi launcher creano automaticamente un ambiente virtuale Python (`.venv/`) nella cartella del progetto e installano le dipendenze di `requirements.txt`; le esecuzioni successive avviano direttamente la GUI. Richiedono comunque che **Python 3.10+** sia già installato sul computer: non sono un eseguibile standalone come quello prodotto da `build.py` (vedi la sezione "Creazione dell'applicazione standalone"), ma un modo per non dover mai digitare comandi a mano.
+
+Su macOS, trattandosi di un'app non firmata, al primo avvio Gatekeeper potrebbe mostrare un avviso ("sviluppatore non identificato"): in tal caso fare clic destro sull'app → **Apri**, oppure abilitarla da Impostazioni di Sistema → Privacy e sicurezza.
+
+### Avvio manuale da terminale
+
 Dalla directory principale della repository:
 
 ```bash
 python -m app
 ```
 
-Questo è il metodo consigliato per avviare l'applicazione, poiché mantiene correttamente la struttura del package Python.
+Questo è il metodo consigliato per avviare l'applicazione da terminale, poiché mantiene correttamente la struttura del package Python.
 
 In alternativa:
 
@@ -784,65 +796,59 @@ Gli avvisi non bloccanti segnalano invece caratteristiche potenzialmente problem
 
 ---
 
-## Creazione dell'applicazione standalone
+## Creazione dell'applicazione standalone (macOS e Windows)
 
-L'intera applicazione può essere impacchettata tramite PyInstaller.
+CubatureApp può essere impacchettato in un'applicazione desktop autonoma tramite PyInstaller: il risultato è un eseguibile che l'utente finale apre con un doppio clic, senza dover installare Python, GFortran o usare un terminale. Il driver numerico Fortran viene compilato una sola volta durante la build e incluso nel pacchetto finale.
 
-Installare innanzitutto le dipendenze di build:
+PyInstaller non esegue cross-compilazione: la build per macOS va eseguita su macOS, quella per Windows va eseguita su Windows. Sono quindi due build separate, ciascuna sulla piattaforma di destinazione.
+
+### Requisiti per la build (solo lato sviluppatore)
+
+- Python 3.10+ con le dipendenze di `requirements-build.txt`;
+- GFortran, necessario solo per compilare il driver numerico durante la build.
+
+Installare le dipendenze di build:
 
 ```bash
 python -m pip install -r requirements-build.txt
 ```
 
-Quindi eseguire:
+### Build su macOS → `CubatureApp.app`
+
+Da macOS, nella directory principale della repository:
 
 ```bash
 python build.py
 ```
 
-L'applicazione risultante viene generata nella directory:
-
-```text
-dist/
-```
-
-Su macOS, il bundle dell'applicazione sarà:
+Il risultato è un vero bundle applicativo macOS:
 
 ```text
 dist/CubatureApp.app
 ```
 
----
+apribile con un doppio clic dal Finder (o spostandolo prima in `/Applications`). L'icona `app/assets/CubatureApp.icns` viene assegnata automaticamente al bundle da `build.py`.
 
-## Creazione del DMG per macOS
+### Build su Windows → `CubatureApp.exe`
 
-Dopo aver eseguito correttamente:
+Da Windows, nella directory principale della repository:
 
-```bash
+```powershell
 python build.py
 ```
 
-è possibile creare l'installer con:
-
-```bash
-bash installer/create_macos_dmg.sh
-```
-
-Lo script:
-
-1. verifica che `dist/CubatureApp.app` esista;
-2. crea lo sfondo dell'installer;
-3. crea un'immagine DMG temporanea;
-4. inserisce l'applicazione nell'immagine;
-5. crea un collegamento alla directory `/Applications`;
-6. converte l'immagine in un DMG compresso;
-7. genera:
+Il risultato è una cartella autonoma con l'eseguibile:
 
 ```text
-dist/CubatureApp-Installer.dmg
+dist\CubatureApp\CubatureApp.exe
 ```
 
-Il DMG risultante può essere distribuito come installer per macOS.
+L'icona `app/assets/cubature_icon.ico` viene assegnata automaticamente all'eseguibile da `build.py`. Per distribuire l'applicazione basta copiare/comprimere l'intera cartella `dist\CubatureApp\`: l'utente finale dovrà solo fare doppio clic su `CubatureApp.exe`.
+
+### Note
+
+- Non è previsto alcun installer aggiuntivo (`.dmg`, `.msi` o simili): le build sopra descritte sono già applicazioni desktop pronte all'uso, senza passaggi ulteriori.
+- Il driver Fortran (`driverCLI`) viene compilato una sola volta in fase di build e incluso nel pacchetto: chi esegue l'applicazione già impacchettata non ha bisogno di GFortran installato sulla propria macchina.
 
 ---
 

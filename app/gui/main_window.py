@@ -1,7 +1,7 @@
 from __future__ import annotations
+from app.utils.paths import resource_path
 
 import traceback
-import shutil
 from pathlib import Path
 
 from PySide6.QtCore import QObject, QThread, QTimer, Signal
@@ -23,7 +23,7 @@ from PySide6.QtCore import Qt
 
 from app.config.settings import Settings, load_settings, save_settings
 from app.core.cubature_engine import CubatureError, CubatureResult, compute_cubature
-from app.core.fortran_backend import FortranBackend, FortranSourceError
+from app.core.fortran_backend import FortranBackend, FortranSourceError, find_compiler
 from app.geometry.mesh_io import MeshFileError, load_mesh
 from app.geometry.mesh_validation import validate_mesh
 from app.gui.export_dialog import ExportDialog
@@ -71,7 +71,7 @@ class HeaderBar(QWidget):
         brand_box.setSpacing(10)
         icon_label = QLabel()
         icon_label.setObjectName("HeaderIcon")
-        icon_path = Path(__file__).resolve().parents[1] / "assets" / "cubature_icon.svg"
+        icon_path = resource_path("app", "assets", "cubature_icon.svg")
         icon_label.setPixmap(QPixmap(str(icon_path)).scaled(40, 40, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         brand_box.addWidget(icon_label)
 
@@ -306,9 +306,7 @@ class MainWindow(QMainWindow):
             return "Vertex and face files must be different files."
         if not self.settings.is_fortran_source_configured():
             return "The Fortran source directory is incomplete or unavailable."
-        if shutil.which("gfortran") is None and not any(
-            Path(path).is_file() for path in ("/opt/homebrew/bin/gfortran", "/usr/local/bin/gfortran")
-        ):
+        if find_compiler("gfortran") is None:
             return "The gfortran compiler is not available."
         return None
 
@@ -462,7 +460,6 @@ class MainWindow(QMainWindow):
         self._last_exact_value = None
         self.header.export_button.setEnabled(False)
         self.header.pdf_button.setEnabled(False)
-        self.header.export_button.setEnabled(False)
         self.input_panel.set_busy(False)
         self._clear_preview_cache()
         self.input_panel.set_status(message, "statusError")

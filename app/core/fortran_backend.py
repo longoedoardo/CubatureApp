@@ -36,6 +36,28 @@ REQUIRED_MODULE_SOURCES = [
 DRIVER_SOURCE = "driverCLI.f90"
 DRIVER_EXE_NAME = "driverCLI"
 
+# Cartelle dove homebrew/gli installer manuali mettono gfortran su macOS,
+# quando l'app viene aperta dal Finder e quindi non eredita il PATH della
+# shell dell'utente (shutil.which da solo non basterebbe).
+_EXTRA_COMPILER_DIRS = ("/opt/homebrew/bin", "/usr/local/bin")
+
+
+def find_compiler(name: str) -> str | None:
+    """Cerca un compilatore nel PATH e, in fallback, nelle cartelle note.
+
+    Usata sia dal backend (per compilare) sia dalla GUI (per mostrare un
+    messaggio chiaro prima ancora di avviare il calcolo), cosi' la logica
+    di ricerca vive in un solo posto.
+    """
+    found = shutil.which(name)
+    if found:
+        return found
+    for directory in _EXTRA_COMPILER_DIRS:
+        candidate = Path(directory) / name
+        if candidate.is_file():
+            return str(candidate)
+    return None
+
 
 class FortranSourceError(Exception):
     """La directory dei sorgenti Fortran non e' configurata correttamente."""
@@ -104,16 +126,6 @@ class FortranBackend:
         candidate = Path(bundle_root) / "app" / "assets" / executable_name
         return candidate if candidate.is_file() else None
 
-    def _compiler_path(self) -> str | None:
-        """Trova il compilatore anche quando l'app viene aperta dal Finder."""
-        compiler = shutil.which(self.compiler)
-        if compiler:
-            return compiler
-        for candidate in (f"/opt/homebrew/bin/{self.compiler}", f"/usr/local/bin/{self.compiler}"):
-            if Path(candidate).is_file():
-                return candidate
-        return None
-
     def _needs_rebuild(self) -> bool:
         exe = self._executable_path()
         if not exe.is_file():
@@ -135,7 +147,7 @@ class FortranBackend:
 
         self.check_sources()
 
-        compiler_path = self._compiler_path()
+        compiler_path = find_compiler(self.compiler)
         if compiler_path is None:
             raise FortranCompilationError(
                 f"Compilatore Fortran '{self.compiler}' non trovato nel PATH. "

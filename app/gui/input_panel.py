@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Qt, QLocale, Signal
 from PySide6.QtGui import QColor, QDoubleValidator
 from PySide6.QtWidgets import (
     QCheckBox,
@@ -16,7 +16,6 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from PySide6.QtCore import Qt
 
 
 def _card_shadow(blur: int = 18, y_offset: int = 3, alpha: int = 28) -> QGraphicsDropShadowEffect:
@@ -135,7 +134,16 @@ class InputPanel(QWidget):
         self.exact_value_edit = QLineEdit()
         self.exact_value_edit.setPlaceholderText("Expected result (optional)")
         self.exact_value_edit.setClearButtonEnabled(True)
-        self.exact_value_edit.setValidator(QDoubleValidator())
+        # The validator must use a fixed locale ("."  as decimal point),
+        # otherwise on systems whose locale uses "," (e.g. Italian) the
+        # field would accept "0,2963" while Python's float() below only
+        # understands "0.2963": a perfectly correct value typed by the
+        # user would be flagged as invalid. get_exact_value() below adds
+        # a second layer of tolerance for the same reason.
+        exact_value_validator = QDoubleValidator()
+        exact_value_validator.setLocale(QLocale(QLocale.C))
+        exact_value_validator.setNotation(QDoubleValidator.ScientificNotation)
+        self.exact_value_edit.setValidator(exact_value_validator)
         self.exact_value_edit.setToolTip(
             "Enter the expected result to calculate the absolute error automatically."
         )
@@ -201,10 +209,18 @@ class InputPanel(QWidget):
     def get_exact_value(self) -> tuple[float | None, bool]:
         """Ritorna (valore, valido). valore=None e valido=True se il campo e' vuoto
         (nessun valore esatto fornito, non e' un errore). valido=False se il
-        testo inserito non e' un numero interpretabile."""
+        testo inserito non e' un numero interpretabile.
+
+        Il testo puo' arrivare con la virgola come separatore decimale
+        (tastiera/locale italiani, testo incollato da altre applicazioni):
+        la normalizziamo qui, in un unico punto, cosi' un valore atteso
+        corretto non viene mai scartato solo per la punteggiatura usata.
+        """
         text = self.exact_value_edit.text().strip()
         if not text:
             return None, True
+        if "," in text and "." not in text:
+            text = text.replace(",", ".")
         try:
             return float(text), True
         except ValueError:

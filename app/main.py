@@ -8,6 +8,7 @@ oppure:
 """
 
 from __future__ import annotations
+from app.utils.paths import resource_path
 
 import sys
 from pathlib import Path
@@ -27,7 +28,7 @@ def main() -> int:
     app = QApplication(sys.argv)
     app.setStyleSheet(STYLESHEET)
 
-    icon_path = Path(__file__).resolve().parent / "assets" / "cubature_icon.svg"
+    icon_path = resource_path("app", "assets", "cubature_icon.svg")
     app_icon = QIcon(str(icon_path))
     app.setWindowIcon(app_icon)
 
