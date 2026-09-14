@@ -55,7 +55,7 @@ CubatureApp offre le seguenti funzionalità:
 - visualizzazione interattiva del dominio poliedrico in 3D;
 - definizione della funzione integranda \(f(x,y,z)\);
 - parsing delle espressioni matematiche tramite SymPy;
-- selezione del **Grado Algebrico di Esattezza (ADE)**;
+- selezione del Grado Algebrico di Esattezza (ADE);
 - generazione automatica dei nodi e dei pesi di cubatura;
 - valutazione della funzione integranda nei nodi di cubatura;
 - calcolo dell'integrale numerico;
@@ -604,44 +604,7 @@ La funzione integranda viene inserita nella forma:
 f(x, y, z)
 ```
 
-L'espressione viene analizzata da SymPy e convertita in una funzione numerica NumPy tramite `lambdify`.
-
-Le variabili disponibili sono:
-
-```text
-x
-y
-z
-```
-
-Tra le funzioni matematiche supportate sono incluse:
-
-```text
-sin
-cos
-tan
-asin
-acos
-atan
-sinh
-cosh
-tanh
-exp
-log
-ln
-sqrt
-abs
-Abs
-```
-
-Sono inoltre disponibili le costanti matematiche:
-
-```text
-pi
-e
-```
-
-Il parser converte le costruzioni LaTeX supportate nella corrispondente rappresentazione SymPy.
+L'espressione viene analizzata da SymPy e convertita in una funzione numerica NumPy tramite `lambdify`. Il parser converte le costruzioni LaTeX supportate nella corrispondente rappresentazione SymPy.
 
 ---
 
@@ -680,31 +643,15 @@ Nel pannello **Mesh Input**:
 
 Nel pannello **Integrand**, inserire una funzione delle variabili `x`, `y` e `z`.
 
-Ad esempio:
-
-```text
-x^2 + y^2 + z^2
-```
-
 ### 3. Selezionare il grado algebrico
 
 Selezionare il Grado Algebrico di Esattezza desiderato.
-
-Ad esempio:
-
-```text
-4
-```
 
 ### 4. Inserire un eventuale risultato atteso
 
 Il campo `Expected Result` è opzionale.
 
-Se viene inserito un valore atteso, l'applicazione calcola automaticamente l'errore assoluto:
-
-\[
-\left|I_{\mathrm{numerico}}-I_{\mathrm{atteso}}\right|.
-\]
+Se viene inserito un valore atteso, l'applicazione calcola automaticamente l'errore assoluto.
 
 ### 5. Eseguire il calcolo
 
